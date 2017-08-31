@@ -13,11 +13,13 @@
  */
 
 #include <string>
+#include <utility>
 #include <vector>
 #include <iostream>
 
 #include "DetectorDescription/Core/interface/DDsvalues.h"
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
+#include "Geometry/HGCalCommonData/interface/HGCalGeometryMode.h"
 
 class DDCompactView;    
 class DDFilteredView;
@@ -33,7 +35,8 @@ public:
 			  const std::string&);
   void loadGeometryHexagon(const DDFilteredView&, HGCalParameters&,
 			   const std::string&, const DDCompactView*,
-			   const std::string&, const std::string&);
+			   const std::string&, const std::string&, 
+			   HGCalGeometryMode::WaferMode);
   void loadSpecParsSquare(const DDFilteredView&, HGCalParameters&);
   void loadSpecParsHexagon(const DDFilteredView&, HGCalParameters&,
 			   const DDCompactView*, const std::string&, 
@@ -54,7 +57,7 @@ private:
     GlobalPoint xyz;
     cellParameters(bool h=false, int w=0, 
 		   GlobalPoint p=GlobalPoint(0,0,0)) : half(h), wafer(w), 
-      xyz(p) {}
+      xyz(std::move(p)) {}
   };
 
   std::vector<double> getDDDArray(const std::string&, const DDsvalues_type&,

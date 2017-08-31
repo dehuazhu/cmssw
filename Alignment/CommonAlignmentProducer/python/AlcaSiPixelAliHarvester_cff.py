@@ -9,19 +9,8 @@ SiPixelAliMilleFileExtractor = cms.EDAnalyzer("MillePedeFileExtractor",
     # 0000, 0001, 0002,...
     outputBinaryFile = cms.string('pedeBinary%04d.dat'))
 
-# Ugly as hell, but that's life
-from CondCore.CondDB.CondDB_cfi import *
-CondDB.connect = cms.string('frontier://FrontierPrep/CMS_CONDITIONS')
-PoolDBESSource = cms.ESSource("PoolDBESSource",
-                              CondDB,
-                              toGet = cms.VPSet(cms.PSet(record = cms.string('AlignPCLThresholdsRcd'),
-                                                         tag = cms.string('SiPixelAliThresholds_test_v0')
-                                                         )
-                                                )
-                              )
-
 from Alignment.MillePedeAlignmentAlgorithm.MillePedeAlignmentAlgorithm_cfi import *
-from Alignment.CommonAlignmentProducer.TrackerAlignmentProducerForPCL_cff import AlignmentProducer
+from Alignment.CommonAlignmentProducer.AlignmentProducerAsAnalyzer_cff import AlignmentProducer
 SiPixelAliPedeAlignmentProducer = copy.deepcopy(AlignmentProducer)
 
 from Alignment.MillePedeAlignmentAlgorithm.MillePedeDQMModule_cff import *
@@ -62,8 +51,11 @@ SiPixelAliPedeAlignmentProducer.algoConfig.pedeSteerer.options = cms.vstring(
 SiPixelAliPedeAlignmentProducer.algoConfig.minNumHits = 10
 SiPixelAliPedeAlignmentProducer.saveToDB = True
 
-
+dqmEnvSiPixelAli = cms.EDAnalyzer("DQMEventInfo",
+                                  subSystemFolder = cms.untracked.string('AlCaReco'),  
+                                  )
 
 ALCAHARVESTSiPixelAli = cms.Sequence(SiPixelAliMilleFileExtractor*
                                      SiPixelAliPedeAlignmentProducer*
-                                     SiPixelAliDQMModule)
+                                     SiPixelAliDQMModule*
+                                     dqmEnvSiPixelAli)

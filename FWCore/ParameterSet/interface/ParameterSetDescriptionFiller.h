@@ -24,7 +24,6 @@ method of the templated argument.  This allows the ParameterSetDescriptionFiller
 
 #include <type_traits>
 #include <string>
-#include <boost/mpl/if.hpp>
 #include "FWCore/ParameterSet/interface/ParameterSetDescriptionFillerBase.h"
 #include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
 #include "FWCore/ParameterSet/interface/ConfigurationDescriptions.h"
@@ -36,16 +35,16 @@ namespace edm {
   public:
     ParameterSetDescriptionFiller() {}
 
-    virtual void fill(ConfigurationDescriptions & descriptions) const {
+    void fill(ConfigurationDescriptions & descriptions) const override {
       T::fillDescriptions(descriptions);
       T::prevalidate(descriptions);
     }
 
-    virtual const std::string& baseType() const {
+    const std::string& baseType() const override {
       return T::baseType();
     }
 
-    virtual const std::string& extendedBaseType() const {
+    const std::string& extendedBaseType() const override {
       const T* type = nullptr;
       return ParameterSetDescriptionFillerBase::extendedBaseType(type);
     }
@@ -66,8 +65,8 @@ namespace edm {
 
   namespace fillDetails {
 
-    typedef char (& no_tag)[1]; // type indicating FALSE
-    typedef char (& yes_tag)[2]; // type indicating TRUE
+    using no_tag = std::false_type; // type indicating FALSE
+    using yes_tag = std::true_type; // type indicating TRUE
 
     template <typename T, void (*)(ConfigurationDescriptions &)>  struct fillDescriptions_function;
     template <typename T> no_tag  has_fillDescriptions_helper(...);
@@ -75,8 +74,8 @@ namespace edm {
 
     template<typename T>
     struct has_fillDescriptions_function {
-      static bool const value =
-        sizeof(has_fillDescriptions_helper<T>(0)) == sizeof(yes_tag);
+      static constexpr bool value =
+      std::is_same<decltype(has_fillDescriptions_helper<T>(nullptr)),yes_tag>::value;
     };
 
     template <typename T>
@@ -101,8 +100,8 @@ namespace edm {
 
     template<typename T>
     struct has_prevalidate_function {
-      static bool const value =
-      sizeof(has_prevalidate_helper<T>(0)) == sizeof(yes_tag);
+      static constexpr bool value =
+      std::is_same<decltype(has_prevalidate_helper<T>(nullptr)),yes_tag>::value;
     };
 
     template <typename T>
@@ -131,7 +130,7 @@ namespace edm {
 
     // If T has a fillDescriptions function then just call that, otherwise
     // put in an "unknown description" as a default.
-    virtual void fill(ConfigurationDescriptions & descriptions) const {
+    void fill(ConfigurationDescriptions & descriptions) const override {
       std::conditional_t<edm::fillDetails::has_fillDescriptions_function<T>::value,
                          edm::fillDetails::DoFillDescriptions<T>,
                          edm::fillDetails::DoFillAsUnknown<T>> fill_descriptions;
@@ -141,11 +140,11 @@ namespace edm {
       //prevalidateService(descriptions);
     }
 
-    virtual const std::string& baseType() const {
+    const std::string& baseType() const override {
       return kBaseForService;
     }
 
-    virtual const std::string& extendedBaseType() const {
+    const std::string& extendedBaseType() const override {
       return kEmpty;
     }
 
@@ -163,7 +162,7 @@ namespace edm {
 
     // If T has a fillDescriptions function then just call that, otherwise
     // put in an "unknown description" as a default.
-    virtual void fill(ConfigurationDescriptions & descriptions) const {
+    void fill(ConfigurationDescriptions & descriptions) const override {
       std::conditional_t<edm::fillDetails::has_fillDescriptions_function<T>::value,
                          edm::fillDetails::DoFillDescriptions<T>,
                          edm::fillDetails::DoFillAsUnknown<T>> fill_descriptions;
@@ -175,11 +174,11 @@ namespace edm {
       prevalidate(descriptions);
     }
 
-    virtual const std::string& baseType() const {
+    const std::string& baseType() const override {
       return kBaseForESSource;
     }
 
-    virtual const std::string& extendedBaseType() const {
+    const std::string& extendedBaseType() const override {
       return kEmpty;
     }
 
@@ -196,7 +195,7 @@ namespace edm {
 
     // If T has a fillDescriptions function then just call that, otherwise
     // put in an "unknown description" as a default.
-    virtual void fill(ConfigurationDescriptions & descriptions) const {
+    void fill(ConfigurationDescriptions & descriptions) const override {
       std::conditional_t<edm::fillDetails::has_fillDescriptions_function<T>::value,
                          edm::fillDetails::DoFillDescriptions<T>,
                          edm::fillDetails::DoFillAsUnknown<T>> fill_descriptions;
@@ -208,11 +207,11 @@ namespace edm {
       prevalidate(descriptions);
     }
 
-    virtual const std::string& baseType() const {
+    const std::string& baseType() const override {
       return kBaseForESProducer;
     }
 
-    virtual const std::string& extendedBaseType() const {
+    const std::string& extendedBaseType() const override {
       return kEmpty;
     }
 

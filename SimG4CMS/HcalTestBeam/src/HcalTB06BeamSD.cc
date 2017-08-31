@@ -5,6 +5,7 @@
 
 #include "SimG4CMS/HcalTestBeam/interface/HcalTB06BeamSD.h"
 #include "SimG4Core/Notification/interface/TrackInformation.h"
+#include "SimDataFormats/HcalTestBeam/interface/HcalTestBeamNumbering.h"
 #include "DetectorDescription/Core/interface/DDFilter.h"
 #include "DetectorDescription/Core/interface/DDFilteredView.h"
 #include "DetectorDescription/Core/interface/DDLogicalPart.h"
@@ -19,7 +20,7 @@
 #include "G4Material.hh"
 #include "CLHEP/Units/GlobalSystemOfUnits.h"
 
-HcalTB06BeamSD::HcalTB06BeamSD(G4String name, const DDCompactView & cpv,
+HcalTB06BeamSD::HcalTB06BeamSD(const G4String& name, const DDCompactView & cpv,
 			       const SensitiveDetectorCatalog & clg,
 			       edm::ParameterSet const & p, 
 			       const SimTrackManager* manager) : 
@@ -72,7 +73,7 @@ HcalTB06BeamSD::HcalTB06BeamSD(G4String name, const DDCompactView & cpv,
     }
     dodet = fv2.next();
   }
-  if (matNames.size() > 0) {
+  if (!matNames.empty()) {
     matName = matNames[0];
     int occ = nocc[0];
     for (unsigned int i = 0; i < matNames.size(); i++) {
@@ -119,43 +120,12 @@ uint32_t HcalTB06BeamSD::setDetUnitId(G4Step * aStep) {
   } else {
     det = 2;
     lay = (touch->GetReplicaNumber(1));
-    G4ThreeVector hitPoint    = preStepPoint->GetPosition();
-    G4ThreeVector localPoint  = setToLocal(hitPoint, touch);
+    G4ThreeVector localPoint  = setToLocal(preStepPoint->GetPosition(), touch);
     x   = (int)(localPoint.x()/(0.2*mm));
     y   = (int)(localPoint.y()/(0.2*mm));
   }
 
-  return packIndex (det, lay, x, y);
-}
-
-uint32_t HcalTB06BeamSD::packIndex(int det, int lay, int x, int y) {
-
-  int ix = 0, ixx = x;
-  if (x < 0) { ix = 1; ixx =-x;}
-  int iy = 0, iyy = y;
-  if (y < 0) { iy = 1; iyy =-y;}
-  uint32_t idx = (det&15)<<28;      //bits 28-31
-  idx         += (lay&127)<<21;     //bits 21-27
-  idx         += (iy&1)<<19;        //bit  19
-  idx         += (iyy&511)<<10;     //bits 10-18
-  idx         += (ix&1)<<9;         //bit   9
-  idx         += (ixx&511);         //bits  0-8
-
-  LogDebug("HcalTB06BeamSD") << "HcalTB06BeamSD: Detector " << det << " Layer "
-			     << lay << " x " << x << " " << ix << " " << ixx 
-			     << " y " << y << " " << iy << " " << iyy << " ID " 
-			     << std::hex << idx << std::dec;
-  return idx;
-}
-
-void HcalTB06BeamSD::unpackIndex(const uint32_t & idx, int& det, int& lay,
-				 int& x, int& y) {
-
-  det  = (idx>>28)&15;
-  lay  = (idx>>21)&127;
-  y    = (idx>>10)&511; if (((idx>>19)&1) == 1) y = -y;
-  x    = (idx)&511;     if (((idx>>9)&1)  == 1) x = -x;
-
+  return HcalTestBeamNumbering::packIndex (det, lay, x, y);
 }
 
 std::vector<G4String> HcalTB06BeamSD::getNames(DDFilteredView& fv) {

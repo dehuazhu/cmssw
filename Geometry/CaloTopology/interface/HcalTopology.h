@@ -25,7 +25,7 @@
 class HcalTopology : public CaloSubdetectorTopology {
 public:
 
-  HcalTopology(const HcalDDDRecConstants* hcons, const bool mergePosition=false);
+  HcalTopology(const HcalDDDRecConstants* hcons, bool mergePosition=false);
   HcalTopology(HcalTopologyMode::Mode mode, int maxDepthHB, int maxDepthHE, HcalTopologyMode::TriggerMode tmode=HcalTopologyMode::TriggerMode_2009);
 	
   HcalTopologyMode::Mode mode() const {return mode_;}
@@ -40,36 +40,36 @@ public:
   static std::string producerTag() { return "HCAL" ; }
 
   /// return a linear packed id
-  virtual unsigned int detId2denseId(const DetId& id) const;
+  unsigned int detId2denseId(const DetId& id) const override;
   /// return a linear packed id
-  virtual DetId denseId2detId(unsigned int /*denseid*/) const;
+  DetId denseId2detId(unsigned int /*denseid*/) const override;
   /// return a count of valid cells (for dense indexing use)
-  virtual unsigned int ncells() const;
+  unsigned int ncells() const override;
   /// return a version which identifies the given topology
-  virtual int topoVersion() const;
+  int topoVersion() const override;
 
   /** Is this a valid cell id? */
-  virtual bool valid(const DetId& id) const;
+  bool valid(const DetId& id) const override;
   /** Is this a valid cell id? */
   bool validHcal(const HcalDetId& id) const;
   bool validDetId(HcalSubdetector subdet, int ieta, int iphi, int depth) const;
   bool validHT(const HcalTrigTowerDetId& id) const;
   /** Is this a valid cell in context of Plan1 */
-  bool validHcal(const HcalDetId& id, const unsigned int flag) const;
+  bool validHcal(const HcalDetId& id, unsigned int flag) const;
   /** Flag=0 for unmerged Id's; =1 for for merged Id's; =2 for either */
 
   /** Get the neighbors of the given cell in east direction*/
-  virtual std::vector<DetId> east(const DetId& id) const;
+  std::vector<DetId> east(const DetId& id) const override;
   /** Get the neighbors of the given cell in west direction*/
-  virtual std::vector<DetId> west(const DetId& id) const;
+  std::vector<DetId> west(const DetId& id) const override;
   /** Get the neighbors of the given cell in north direction*/
-  virtual std::vector<DetId> north(const DetId& id) const;
+  std::vector<DetId> north(const DetId& id) const override;
   /** Get the neighbors of the given cell in south direction*/
-  virtual std::vector<DetId> south(const DetId& id) const;
+  std::vector<DetId> south(const DetId& id) const override;
   /** Get the neighbors of the given cell in up direction (outward)*/
-  virtual std::vector<DetId> up(const DetId& id) const;
+  std::vector<DetId> up(const DetId& id) const override;
   /** Get the neighbors of the given cell in down direction (inward)*/
-  virtual std::vector<DetId> down(const DetId& id) const;
+  std::vector<DetId> down(const DetId& id) const override;
 
   /** Get the neighbors of the given cell with higher (signed) ieta */
   int incIEta(const HcalDetId& id, HcalDetId neighbors[2]) const;
@@ -115,18 +115,18 @@ public:
 
   /// for each of the ~17 depth segments, specify which readout bin they belong to
   /// if the ring is not found, the first one with a lower ring will be returned.
-  void getDepthSegmentation(const unsigned ring, 
+  void getDepthSegmentation(unsigned ring, 
 			    std::vector<int> & readoutDepths,
-			    const bool flag=false) const;
-  void setDepthSegmentation(const unsigned ring, 
+			    bool flag=false) const;
+  void setDepthSegmentation(unsigned ring, 
 			    const std::vector<int> & readoutDepths,
-			    const bool flag);
+			    bool flag);
   /// returns the boundaries of the depth segmentation, so that the first
   /// result is the first segment, and the second result is the first one
   /// of the next segment.  Used for calculating physical bounds.
-  std::pair<int, int> segmentBoundaries(const unsigned ring,
-					const unsigned depth,
-					const bool flag=false) const;
+  std::pair<int, int> segmentBoundaries(unsigned ring,
+					unsigned depth,
+					bool flag=false) const;
   int getPhiZOne(std::vector<std::pair<int,int> >& phiz) const {return hcons_->getPhiZOne(phiz);}
 
   unsigned int getHBSize() const {return HBSize_;}
@@ -156,7 +156,7 @@ public:
   unsigned int detId2denseIdCALIB(const DetId& id) const;
 
   unsigned int getNumberOfShapes() const { return numberOfShapes_; }
-  bool isBH() const { return ((hcons_ == 0) ? false : hcons_->isBH()); }
+  bool isBH() const { return ((hcons_ == nullptr) ? false : hcons_->isBH()); }
 
   const HcalDDDRecConstants* dddConstants () const {return hcons_;}
   bool  withSpecialRBXHBHE() const {return hcons_->withSpecialRBXHBHE();}

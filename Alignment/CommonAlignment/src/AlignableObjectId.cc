@@ -14,7 +14,7 @@ struct AlignableObjectId::entry {
 
 namespace {
 
-  static constexpr AlignableObjectId::entry entries_RunI[] {
+  constexpr AlignableObjectId::entry entries_RunI[] {
     {align::invalid         , "invalid"},
     {align::AlignableDetUnit, "DetUnit"},
     {align::AlignableDet    , "Det"},
@@ -80,7 +80,7 @@ namespace {
     {align::notfound, 0}
   };
 
-  static constexpr AlignableObjectId::entry entries_PhaseI[] {
+  constexpr AlignableObjectId::entry entries_PhaseI[] {
     {align::invalid         , "invalid"},
     {align::AlignableDetUnit, "DetUnit"},
     {align::AlignableDet    , "Det"},
@@ -146,16 +146,16 @@ namespace {
     {align::notfound, 0}
   };
 
-  static constexpr AlignableObjectId::entry entries_PhaseII[] {
+  constexpr AlignableObjectId::entry entries_PhaseII[] {
     {align::invalid         , "invalid"},
     {align::AlignableDetUnit, "DetUnit"},
     {align::AlignableDet    , "Det"},
 
-    {align::TPBModule      , "P1PXBModule"},
-    {align::TPBLadder      , "P1PXBLadder"},
-    {align::TPBLayer       , "P1PXBLayer"},
-    {align::TPBHalfBarrel  , "P1PXBHalfBarrel"},
-    {align::TPBBarrel      , "P1PXBBarrel"},
+    {align::TPBModule      , "P2PXBModule"},
+    {align::TPBLadder      , "P2PXBLadder"},
+    {align::TPBLayer       , "P2PXBLayer"},
+    {align::TPBHalfBarrel  , "P2PXBHalfBarrel"},
+    {align::TPBBarrel      , "P2PXBBarrel"},
 
     {align::TPEModule      , "P2PXECModule"},
     {align::TPEPanel       , "P2PXECPanel"},

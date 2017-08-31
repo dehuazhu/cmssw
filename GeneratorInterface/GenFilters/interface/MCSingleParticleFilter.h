@@ -47,6 +47,7 @@ class MCSingleParticleFilter : public edm::EDFilter {
 
       virtual bool filter(edm::Event&, const edm::EventSetup&);
    private:
+      // ----------memeber function----------------------
       // ----------member data ---------------------------
       
        edm::EDGetTokenT<edm::HepMCProduct> token_;
@@ -55,5 +56,6 @@ class MCSingleParticleFilter : public edm::EDFilter {
        std::vector<double> etaMin;  
        std::vector<double> etaMax;
        std::vector<int> status;
+       double betaBoost;
 };
 #endif

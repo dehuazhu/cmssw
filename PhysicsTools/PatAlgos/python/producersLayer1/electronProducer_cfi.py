@@ -8,6 +8,7 @@ patElectrons = cms.EDProducer("PATElectronProducer",
     useParticleFlow  =  cms.bool( False ),
     pfElectronSource = cms.InputTag("particleFlow"),
     pfCandidateMap = cms.InputTag("particleFlow:electrons"),
+    usePfCandidateMultiMap = cms.bool( False ),
 
     # collections for mva input variables
     reducedBarrelRecHitCollection = cms.InputTag("reducedEcalRecHitsEB"),
@@ -40,7 +41,7 @@ patElectrons = cms.EDProducer("PATElectronProducer",
 
     # embedding of AOD items
     embedGsfElectronCore = cms.bool(True),  ## embed in AOD externally stored gsf electron core
-    embedGsfTrack        = cms.bool(True),  ## embed in AOD externally stored gsf track
+    embedGsfTrack        = cms.bool(False),  ## embed in AOD externally stored gsf track
     embedSuperCluster    = cms.bool(True),  ## embed in AOD externally stored supercluster
     embedPflowSuperCluster         = cms.bool(True),  ## embed in AOD externally stored supercluster
     embedSeedCluster               = cms.bool(True),  ## embed in AOD externally stored the electron's seedcluster 
@@ -92,5 +93,16 @@ patElectrons = cms.EDProducer("PATElectronProducer",
 
     # PFClusterIso
     addPFClusterIso = cms.bool(False),
-    addPuppiIsolation = cms.bool(False)
+    addPuppiIsolation = cms.bool(False),
+
+    # Compute and store Mini-Isolation.
+    # Implemention and a description of parameters can be found in:
+    # PhysicsTools/PatUtils/src/PFIsolation.cc
+    # only works in miniaod, so set to True in miniAOD_tools.py
+    computeMiniIso = cms.bool(False),
+    pfCandsForMiniIso = cms.InputTag("packedPFCandidates"),
+     # veto on candidates in deadcone only in endcap
+    miniIsoParamsE = cms.vdouble(0.05, 0.2, 10.0, 0.0, 0.015, 0.015, 0.08, 0.0, 0.0),
+    miniIsoParamsB = cms.vdouble(0.05, 0.2, 10.0, 0.0, 0.000, 0.000, 0.00, 0.0, 0.0),
+
 )

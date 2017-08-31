@@ -1,10 +1,9 @@
 #include "DetectorDescription/Parser/src/DDLMap.h"
-
-#include <stddef.h>
-#include <utility>
-
-#include "DetectorDescription/ExprAlgo/interface/ClhepEvaluator.h"
+#include "DetectorDescription/Core/interface/ClhepEvaluator.h"
 #include "DetectorDescription/Parser/interface/DDLElementRegistry.h"
+
+#include <cstddef>
+#include <utility>
 
 class DDCompactView;
 
@@ -46,21 +45,21 @@ template <typename ScannerT> struct Mapper::definition
 void
 MapPair::operator() (char const* str, char const* end) const
 { 
-  DDLMap* myDDLMap = dynamic_cast < DDLMap* > (DDLGlobalRegistry::instance().getElement("Map"));
+  std::shared_ptr<DDLMap> myDDLMap = std::static_pointer_cast<DDLMap>(DDLGlobalRegistry::instance().getElement("Map"));
   myDDLMap->do_pair(str, end);
 }
 
 void
 MapMakeName::operator() (char const* str, char const* end) const
 {
-  DDLMap* myDDLMap = dynamic_cast < DDLMap* > (DDLGlobalRegistry::instance().getElement("Map"));
+  std::shared_ptr<DDLMap> myDDLMap = std::static_pointer_cast<DDLMap>(DDLGlobalRegistry::instance().getElement("Map"));
   myDDLMap->do_makeName(str, end);
 }
 
 void
 MapMakeDouble::operator() (char const* str, char const* end)const
 {
-  DDLMap* myDDLMap = dynamic_cast < DDLMap* > (DDLGlobalRegistry::instance().getElement("Map"));
+  std::shared_ptr<DDLMap> myDDLMap = std::static_pointer_cast<DDLMap>(DDLGlobalRegistry::instance().getElement("Map"));
   myDDLMap->do_makeDouble(str, end);
 }
 
@@ -81,7 +80,7 @@ DDLMap::processElement( const std::string& name, const std::string& nmspace, DDC
   DDXMLAttribute atts = getAttributeSet();
   std::string tName = atts.find("name")->second;
 
-  if (tTextToParse.size() == 0)
+  if (tTextToParse.empty())
   {
     errorOut("No std::string to parse!");
   }

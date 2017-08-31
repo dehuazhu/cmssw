@@ -3,11 +3,12 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process('SIM')
 
 # import of standard configurations
+process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
-process.load('SimG4CMS.HGCalTestBeam.HGCalTB170XML_cfi')
+process.load('SimG4CMS.HGCalTestBeam.HGCalTB170JulyXML_cfi')
 process.load('Geometry.HGCalCommonData.hgcalNumberingInitialization_cfi')
 process.load('Geometry.HGCalCommonData.hgcalParametersInitialization_cfi')
 process.load('Configuration.StandardSequences.MagneticField_0T_cff')
@@ -24,27 +25,14 @@ process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(10)
 )
 
-process.MessageLogger = cms.Service("MessageLogger",
-    cout = cms.untracked.PSet(
-        default = cms.untracked.PSet(
-            limit = cms.untracked.int32(0)
-        ),
-        HGCSim = cms.untracked.PSet(
-            limit = cms.untracked.int32(-1)
-        ),
-        HcalSim = cms.untracked.PSet(
-            limit = cms.untracked.int32(-1)
-        ),
-    ),
-    categories = cms.untracked.vstring('HGCSim','HcalSim'),
-    destinations = cms.untracked.vstring('cout','cerr')
-)
+if 'MessageLogger' in process.__dict__:
+    process.MessageLogger.categories.append('HGCSim')
+    process.MessageLogger.categories.append('HcalSim')
 
 # Input source
 process.source = cms.Source("EmptySource")
 
 process.options = cms.untracked.PSet(
-
 )
 
 # Production Info
@@ -101,8 +89,24 @@ process.VtxSmeared.MinX = -7.5
 process.VtxSmeared.MaxX =  7.5
 process.VtxSmeared.MinY = -7.5
 process.VtxSmeared.MaxY =  7.5
-process.HGCalTBAnalyzer.DoDigis = False
-process.HGCalTBAnalyzer.DoRecHits = False
+process.g4SimHits.HGCSD.RejectMouseBite = True
+process.g4SimHits.HGCSD.RotatedWafer    = True
+process.g4SimHits.Watchers = cms.VPSet(cms.PSet(
+		HGCPassive = cms.PSet(
+			LVNames = cms.vstring('HGCalEE','HGCalHE','HGCalAH', 'CMSE'),
+			MotherName = cms.string('CMSE'),
+			),
+		type = cms.string('HGCPassive'),
+		)
+				       )
+process.HGCalTBAnalyzer.DoDigis     = False
+process.HGCalTBAnalyzer.DoRecHits   = False
+process.HGCalTBAnalyzer.UseFH       = True
+process.HGCalTBAnalyzer.UseBH       = True
+process.HGCalTBAnalyzer.UseBeam     = True
+process.HGCalTBAnalyzer.ZFrontEE    = 1110.0
+process.HGCalTBAnalyzer.ZFrontFH    = 1172.3
+process.HGCalTBAnalyzer.DoPassive   = True
 
 # Path and EndPath definitions
 process.generation_step = cms.Path(process.pgen)

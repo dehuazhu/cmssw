@@ -11,18 +11,6 @@ ALCARECOTkAlMinBiasFilterForSiPixelAli.TriggerResultsTag = cms.InputTag("Trigger
 
 from Alignment.CommonAlignmentProducer.LSNumberFilter_cfi import *
 
-
-# Ugly as hell, but that's life
-from CondCore.CondDB.CondDB_cfi import *
-CondDB.connect = cms.string('frontier://FrontierPrep/CMS_CONDITIONS')
-PoolDBESSource = cms.ESSource("PoolDBESSource",
-                              CondDB,
-                              toGet = cms.VPSet(cms.PSet(record = cms.string('AlignPCLThresholdsRcd'),
-                                                         tag = cms.string('SiPixelAliThresholds_test_v0')
-                                                         )
-                                                )
-                              )
-
 # Ingredient: offlineBeamSpot
 from RecoVertex.BeamSpotProducer.BeamSpot_cfi import offlineBeamSpot
 
@@ -85,7 +73,7 @@ SiPixelAliTrackRefitter1 = SiPixelAliTrackRefitter0.clone(
 
 #-- Alignment producer
 from Alignment.MillePedeAlignmentAlgorithm.MillePedeAlignmentAlgorithm_cfi import *
-from Alignment.CommonAlignmentProducer.TrackerAlignmentProducerForPCL_cff import AlignmentProducer 
+from Alignment.CommonAlignmentProducer.AlignmentProducerAsAnalyzer_cff import AlignmentProducer
 SiPixelAliMilleAlignmentProducer = copy.deepcopy(AlignmentProducer)
 SiPixelAliMilleAlignmentProducer.ParameterBuilder.Selector = cms.PSet(
     alignParams = cms.vstring(

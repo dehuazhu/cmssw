@@ -381,7 +381,7 @@ def setupBTagging(process, jetSource, pfCandidates, explicitJTA, pvSource, svSou
             if btagInfo == 'pfDeepCMVATagInfos':
                 addToProcessAndTask(btagPrefix+btagInfo+labelName+postfix,
                                     btag.pfDeepCMVATagInfos.clone(
-                                        pfDeepCSVTagInfos = cms.InputTag(btagPrefix+'pfDeepCSVTagInfos'+labelName+postfix),
+                                        deepNNTagInfos = cms.InputTag(btagPrefix+'pfDeepCSVTagInfos'+labelName+postfix),
                                         ipInfoSrc = cms.InputTag(btagPrefix+"pfImpactParameterTagInfos"+labelName+postfix),
                                         muInfoSrc = cms.InputTag(btagPrefix+"softPFMuonsTagInfos"+labelName+postfix),
                                         elInfoSrc = cms.InputTag(btagPrefix+"softPFElectronsTagInfos"+labelName+postfix)),
@@ -391,7 +391,7 @@ def setupBTagging(process, jetSource, pfCandidates, explicitJTA, pvSource, svSou
             if btagInfo == 'pfDeepCMVANegativeTagInfos':
                 addToProcessAndTask(btagPrefix+btagInfo+labelName+postfix,
                                     btag.pfDeepCMVATagInfos.clone(
-                                        pfDeepCSVTagInfos = cms.InputTag(btagPrefix+'pfDeepCSVTagInfos'+labelName+postfix),
+                                        deepNNTagInfos = cms.InputTag(btagPrefix+'pfDeepCSVTagInfos'+labelName+postfix),
                                         ipInfoSrc = cms.InputTag(btagPrefix+"pfImpactParameterTagInfos"+labelName+postfix),
                                         muInfoSrc = cms.InputTag(btagPrefix+"softPFMuonsTagInfos"+labelName+postfix),
                                         elInfoSrc = cms.InputTag(btagPrefix+"softPFElectronsTagInfos"+labelName+postfix)),
@@ -401,7 +401,7 @@ def setupBTagging(process, jetSource, pfCandidates, explicitJTA, pvSource, svSou
             if btagInfo == 'pfDeepCMVAPositiveTagInfos':
                 addToProcessAndTask(btagPrefix+btagInfo+labelName+postfix,
                                     btag.pfDeepCMVATagInfos.clone(
-                                        pfDeepCSVTagInfos = cms.InputTag(btagPrefix+'pfDeepCSVTagInfos'+labelName+postfix),
+                                        deepNNTagInfos = cms.InputTag(btagPrefix+'pfDeepCSVTagInfos'+labelName+postfix),
                                         ipInfoSrc = cms.InputTag(btagPrefix+"pfImpactParameterTagInfos"+labelName+postfix),
                                         muInfoSrc = cms.InputTag(btagPrefix+"softPFMuonsTagInfos"+labelName+postfix),
                                         elInfoSrc = cms.InputTag(btagPrefix+"softPFElectronsTagInfos"+labelName+postfix)),
@@ -549,7 +549,6 @@ def setupBTagging(process, jetSource, pfCandidates, explicitJTA, pvSource, svSou
         if hasattr(btag,btagDiscr): 
             newDiscr = btagPrefix+btagDiscr+labelName+postfix #new discriminator name
             if hasattr(process, newDiscr):
-                print 'skipping %s as it has already been loaded in the process' % newDiscr #check that we did not create this producer before, if so skip
                 pass 
             elif hasattr(getattr(btag, btagDiscr), 'tagInfos'):
                 addToProcessAndTask(
@@ -984,7 +983,7 @@ class AddJetCollection(ConfigToolBase):
                 _newPatJetFlavourAssociation.rParam=rParam
                 _newPatJetFlavourAssociation.bHadrons=cms.InputTag("patJetPartons"+postfix,"bHadrons")
                 _newPatJetFlavourAssociation.cHadrons=cms.InputTag("patJetPartons"+postfix,"cHadrons")
-                _newPatJetFlavourAssociation.partons=cms.InputTag("patJetPartons"+postfix,"algorithmicPartons")
+                _newPatJetFlavourAssociation.partons=cms.InputTag("patJetPartons"+postfix,"physicsPartons")
                 _newPatJetFlavourAssociation.leptons=cms.InputTag("patJetPartons"+postfix,"leptons")
             else :
                 addToProcessAndTask('patJetFlavourAssociation'+_labelName+postfix,
@@ -994,7 +993,7 @@ class AddJetCollection(ConfigToolBase):
                                         rParam=rParam,
                                         bHadrons = cms.InputTag("patJetPartons"+postfix,"bHadrons"),
                                         cHadrons = cms.InputTag("patJetPartons"+postfix,"cHadrons"),
-                                        partons = cms.InputTag("patJetPartons"+postfix,"algorithmicPartons"),
+                                        partons = cms.InputTag("patJetPartons"+postfix,"physicsPartons"),
                                         leptons = cms.InputTag("patJetPartons"+postfix,"leptons")),
                                     process, task)
 

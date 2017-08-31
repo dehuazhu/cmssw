@@ -11,12 +11,6 @@ def ProcessName(process):
     if 'hltTrigReport' in process.__dict__:
         process.hltTrigReport.HLTriggerResults = cms.InputTag( 'TriggerResults','',process.name_() )
 
-    if 'hltDQMHLTScalers' in process.__dict__:
-        process.hltDQMHLTScalers.triggerResults = cms.InputTag( 'TriggerResults','',process.name_() )
-
-    if 'hltDQML1SeedLogicScalers' in process.__dict__:
-        process.hltDQML1SeedLogicScalers.processname = process.name_()
-
     return(process)
 
 
@@ -118,7 +112,7 @@ def L1REPACK(process,sequence="Full"):
 
     from Configuration.StandardSequences.Eras import eras
 
-    l1repack = cms.Process('L1REPACK',eras.Run2_2016)
+    l1repack = cms.Process('L1REPACK',eras.Run2_2017)
     l1repack.load('Configuration.StandardSequences.SimL1EmulatorRepack_'+sequence+'_cff')
 
     for module in l1repack.es_sources_():
@@ -130,12 +124,19 @@ def L1REPACK(process,sequence="Full"):
 
     for module in l1repack.SimL1Emulator.expandAndClone().moduleNames():
         setattr(process,module,getattr(l1repack,module))
+    for sequence in l1repack.sequences_():
+        setattr(process,sequence,getattr(l1repack,sequence))
     process.SimL1Emulator = l1repack.SimL1Emulator
 
     for path in process.paths_():
         getattr(process,path).insert(0,process.SimL1Emulator)
     for path in process.endpaths_():
         getattr(process,path).insert(0,process.SimL1Emulator)
+
+    # special L1T cleanup
+    for obj in ('SimL1TCalorimeter','SimL1TMuonCommon','SimL1TMuon','SimL1TechnicalTriggers','SimL1EmulatorCore','ecalDigiSequence','hcalDigiSequence','calDigi'):
+        if hasattr(process,obj):
+            delattr(process,obj)
 
     return process
 

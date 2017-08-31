@@ -1,12 +1,13 @@
 #include "DetectorDescription/Parser/src/DDLVector.h"
 
-#include <stddef.h>
+#include <cstddef>
 #include <map>
+#include <memory>
 #include <utility>
 
 #include "DetectorDescription/Core/interface/DDStrVector.h"
 #include "DetectorDescription/Core/interface/DDVector.h"
-#include "DetectorDescription/ExprAlgo/interface/ClhepEvaluator.h"
+#include "DetectorDescription/Core/interface/ClhepEvaluator.h"
 #include "DetectorDescription/Parser/interface/DDLElementRegistry.h"
 #include "DetectorDescription/Parser/src/DDXMLElement.h"
 #include "boost/spirit/include/classic.hpp"
@@ -26,10 +27,10 @@ public:
     }
   
   VectorMakeDouble() {
-    ddlVector_ = dynamic_cast < DDLVector* > (DDLGlobalRegistry::instance().getElement("Vector"));
+    ddlVector_ = std::static_pointer_cast<DDLVector>(DDLGlobalRegistry::instance().getElement("Vector"));
   }
 private: 
-  DDLVector * ddlVector_;
+  std::shared_ptr<DDLVector> ddlVector_;
 };
 
 class VectorMakeString
@@ -41,10 +42,10 @@ public:
     }
   
   VectorMakeString() {
-    ddlVector_ = dynamic_cast < DDLVector* > (DDLGlobalRegistry::instance().getElement("Vector"));
+    ddlVector_ = std::static_pointer_cast<DDLVector>(DDLGlobalRegistry::instance().getElement("Vector"));
   }
 private:
-  DDLVector * ddlVector_;
+  std::shared_ptr<DDLVector> ddlVector_;
 };
 
 bool
@@ -92,17 +93,17 @@ DDLVector::processElement( const std::string& name, const std::string& nmspace, 
 		    && atts.find("type")->second == "string")
 		   ? true : false);
   std::string tTextToParse = getText();
-  //  cout << "tTextToParse is |"<< tTextToParse << "|" << endl;
-  if (tTextToParse.size() == 0) {
+
+  if (tTextToParse.empty()) {
     errorOut(" EMPTY STRING ");
   }
   
-  if (isNumVec) {//(atts.find("type") == atts.end() || atts.find("type")->second == "numeric") {
+  if (isNumVec) {
     if (!parse_numbers(tTextToParse.c_str())) {
       errorOut(tTextToParse.c_str());
     }
   }
-  else if (isStringVec) { //(atts.find("type")->second == "string") {
+  else if (isStringVec) {
     if (!parse_strings(tTextToParse.c_str())) {
       errorOut(tTextToParse.c_str());
     }
@@ -111,19 +112,13 @@ DDLVector::processElement( const std::string& name, const std::string& nmspace, 
     errorOut("Unexpected std::vector type. Only \"numeric\" and \"string\" are allowed.");
   }
 
-
   if (parent() == "Algorithm" || parent() == "SpecPar")
   {
-    if (isNumVec) { //(atts.find("type") != atts.end() || atts.find("type")->second == "numeric") {
-      //	std::cout << "adding to pVecMap name= " << atts.find("name")->second << std::endl;
-      //	for (std::vector<double>::const_iterator it = pVector.begin(); it != pVector.end(); ++it)
-      //	  std::cout << *it << "\t" << std::endl;
+    if (isNumVec) {
       pVecMap[atts.find("name")->second] = pVector;
-      //	std::cout << "size: " << pVecMap.size() << std::endl;
     }
-    else if (isStringVec) { //(atts.find("type")->second == "string") {
+    else if (isStringVec) {
       pStrVecMap[atts.find("name")->second] = pStrVector;
-      //	cout << "it is a string, name is: " << atts.find("name")->second << endl;
     }
     size_t expNEntries = 0;
     if (atts.find("nEntries") != atts.end()) {
@@ -170,14 +165,14 @@ DDLVector::do_makeDouble( char const* str, char const* end )
 {
   std::string ts(str, end);
   double td = myRegistry_->evaluator().eval(pNameSpace, ts);
-  pVector.push_back(td);
+  pVector.emplace_back(td);
 }
 
 void
 DDLVector::do_makeString( char const* str, char const* end )
 {
   std::string ts(str, end);
-  pStrVector.push_back(ts);
+  pStrVector.emplace_back(ts);
 }
 
 void

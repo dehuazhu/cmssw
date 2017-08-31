@@ -4,15 +4,15 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "DetectorDescription/Base/interface/DDTypes.h"
-#include "DetectorDescription/Algorithm/interface/DDAlgorithm.h"
+#include "DetectorDescription/Core/interface/DDTypes.h"
+#include "DetectorDescription/Core/interface/DDAlgorithm.h"
 
 class DDHGCalHEAlgo : public DDAlgorithm {
  
 public:
   //Constructor and Destructor
   DDHGCalHEAlgo(); //const std::string & name);
-  virtual ~DDHGCalHEAlgo();
+  ~DDHGCalHEAlgo() override;
   
   struct HGCalHEPar {
     double yh1, bl1, tl1, yh2, bl2, tl2, alp, theta, phi, xpos, ypos, zpos;
@@ -26,12 +26,12 @@ public:
 		  const DDVectorArguments & vArgs,
 		  const DDMapArguments & mArgs,
 		  const DDStringArguments & sArgs,
-		  const DDStringVectorArguments & vsArgs);
-  void execute(DDCompactView& cpv);
+		  const DDStringVectorArguments & vsArgs) override;
+  void execute(DDCompactView& cpv) override;
 
 protected:
 
-  void constructLayers (DDLogicalPart, DDCompactView& cpv);
+  void constructLayers (const DDLogicalPart&, DDCompactView& cpv);
   HGCalHEPar parameterLayer(double rinF, double routF, double rinB,
 			    double routB, double zi, double zo);
   HGCalHEPar parameterLayer(int type, double rinF, double routF, double rinB,

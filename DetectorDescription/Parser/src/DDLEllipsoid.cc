@@ -1,6 +1,6 @@
 #include "DetectorDescription/Parser/src/DDLEllipsoid.h"
 #include "DetectorDescription/Core/interface/DDSolid.h"
-#include "DetectorDescription/ExprAlgo/interface/ClhepEvaluator.h"
+#include "DetectorDescription/Core/interface/ClhepEvaluator.h"
 #include "DetectorDescription/Parser/interface/DDLElementRegistry.h"
 #include "DetectorDescription/Parser/src/DDLSolid.h"
 #include "DetectorDescription/Parser/src/DDXMLElement.h"
@@ -12,7 +12,8 @@ DDLEllipsoid::DDLEllipsoid( DDLElementRegistry* myreg )
 {}
 
 void
-DDLEllipsoid::processElement( const std::string& name, const std::string& nmspace, DDCompactView& cpv )
+DDLEllipsoid::processElement( const std::string& name, const std::string& nmspace,
+			      DDCompactView& cpv )
 { 
   ClhepEvaluator & ev = myRegistry_->evaluator();
   DDXMLAttribute atts = getAttributeSet();

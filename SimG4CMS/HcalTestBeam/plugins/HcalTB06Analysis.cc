@@ -14,6 +14,7 @@
 #include "SimG4CMS/HcalTestBeam/interface/HcalTB06Analysis.h"
 #include "SimG4CMS/HcalTestBeam/interface/HcalTB06Histo.h"
 #include "SimG4CMS/HcalTestBeam/interface/HcalTB06BeamSD.h"
+#include "SimDataFormats/HcalTestBeam/interface/HcalTestBeamNumbering.h"
 
 // to retreive hits
 #include "DataFormats/HcalDetId/interface/HcalSubdetector.h"
@@ -71,7 +72,7 @@ HcalTB06Analysis::HcalTB06Analysis(const edm::ParameterSet &p) : count(0) {
 
   m_idxetaHcal   = (int)(beamEta/0.087) + 1;
   m_idxphiHcal   = (int)(beamPhi/0.087) + 6;
-  if(m_idxphiHcal > 72) { m_idxphiHcal -= 72; }
+  if(m_idxphiHcal > 72) { m_idxphiHcal -= 73; }
 
   edm::ParameterSet ptb = p.getParameter<edm::ParameterSet>("TestBeamAnalysis");
   m_timeLimit = ptb.getParameter<double>("TimeLimit");
@@ -201,7 +202,7 @@ void HcalTB06Analysis::analyze(const edm::Event & evt, const edm::EventSetup&)
     for (unsigned int i=0; i<BeamHits->size(); ++i) {
       unsigned int id = ((*BeamHits)[i].id());
       int det, lay, ix, iy;
-      HcalTB06BeamSD::unpackIndex(id,det,lay,ix,iy);
+      HcalTestBeamNumbering::unpackIndex(id,det,lay,ix,iy);
       if ((det == 1) && ((*BeamHits)[i].time() < m_timeLimit)) {
 	if (lay > 0 && lay <= 4) {
 	  eTrig[lay-1] += (*BeamHits)[i].energy();
@@ -218,6 +219,6 @@ void HcalTB06Analysis::analyze(const edm::Event & evt, const edm::EventSetup&)
 			    << eTrig[0] << ":" << eTrig[1] << ":" << eTrig[2]
 			    << ":" << eTrig[3] << ":" << eTrig[4] << ":" 
 			    << eTrig[5] << ":" << eTrig[6];
-;
+
   m_histo->fillTree(eCalo,eTrig);
 }

@@ -4,10 +4,12 @@ MicroEventContent = cms.PSet(
     outputCommands = cms.untracked.vstring(
         'drop *',
         'keep *_slimmedPhotons_*_*',
+        'keep *_slimmedOOTPhotons_*_*',
         'keep *_slimmedElectrons_*_*',
         'keep *_slimmedMuons_*_*',
         'keep *_slimmedTaus_*_*',
         'keep *_slimmedTausBoosted_*_*',
+        'keep *_slimmedCaloJets_*_*',
         'keep *_slimmedJets_*_*',
         'keep *_slimmedJetsAK8_*_*',
         'keep *_slimmedJetsPuppi_*_*',
@@ -15,6 +17,8 @@ MicroEventContent = cms.PSet(
         'keep *_slimmedMETsNoHF_*_*',
         'keep *_slimmedMETsPuppi_*_*',
         'keep *_slimmedSecondaryVertices_*_*',
+        'keep *_slimmedLambdaVertices_*_*',
+        'keep *_slimmedKshortVertices_*_*',
         'keep *_slimmedJetsAK8PFPuppiSoftDropPacked_SubJets_*',
 
         'keep recoPhotonCores_reducedEgamma_*_*',
@@ -23,7 +27,8 @@ MicroEventContent = cms.PSet(
         'keep recoSuperClusters_reducedEgamma_*_*',
         'keep recoCaloClusters_reducedEgamma_*_*',
         'keep EcalRecHitsSorted_reducedEgamma_*_*',
-
+        'keep recoGsfTracks_reducedEgamma_*_*',
+        
         'drop *_*_caloTowers_*',
         'drop *_*_pfCandidates_*',
         'drop *_*_genJets_*',
@@ -31,6 +36,9 @@ MicroEventContent = cms.PSet(
         'keep *_offlineBeamSpot_*_*',
         'keep *_offlineSlimmedPrimaryVertices_*_*',
         'keep patPackedCandidates_packedPFCandidates_*_*',
+        'keep *_isolatedTracks_*_*',
+        # low energy conversions for BPH
+        'keep *_oniaPhotonCandidates_*_*',
 
         'keep *_bunchSpacingProducer_*_*',
 
@@ -42,7 +50,7 @@ MicroEventContent = cms.PSet(
         'keep double_fixedGridRhoFastjetCentralChargedPileUp__*',
         'keep double_fixedGridRhoFastjetCentralNeutral__*',
 
-        'keep *_selectedPatTrigger_*_*',
+        'keep *_slimmedPatTrigger_*_*',
         'keep patPackedTriggerPrescales_patTrigger__*',
         'keep patPackedTriggerPrescales_patTrigger_l1max_*',
         'keep patPackedTriggerPrescales_patTrigger_l1min_*',
@@ -74,8 +82,9 @@ MicroEventContentMC = cms.PSet(
 )
 MicroEventContentMC.outputCommands += [
         #'keep *_slimmedGenJets*_*_*',
-        'keep *_slimmedGenJets_*_*',
-        'keep *_slimmedGenJetsAK8_*_*',
+        'keep *_slimmedGenJets__*',
+        'keep *_slimmedGenJetsFlavourInfos_*_*',
+        'keep *_slimmedGenJetsAK8__*',
         'keep patPackedGenParticles_packedGenParticles_*_*',
         'keep recoGenParticles_prunedGenParticles_*_*',
         'keep LHEEventProduct_*_*_*',
@@ -89,3 +98,18 @@ MicroEventContentMC.outputCommands += [
         'keep GenRunInfoProduct_*_*_*',
         'keep L1GtTriggerMenuLite_l1GtTriggerMenuLite__*',
 ]
+
+MiniAODOverrideBranchesSplitLevel = cms.untracked.VPSet( [
+cms.untracked.PSet(branch = cms.untracked.string("patPackedCandidates_packedPFCandidates__*"),splitLevel=cms.untracked.int32(99)),
+cms.untracked.PSet(branch = cms.untracked.string("recoGenParticles_prunedGenParticles__*"),splitLevel=cms.untracked.int32(99)),
+cms.untracked.PSet(branch = cms.untracked.string("patTriggerObjectStandAlones_slimmedPatTrigger__*"),splitLevel=cms.untracked.int32(99)),
+cms.untracked.PSet(branch = cms.untracked.string("patPackedGenParticles_packedGenParticles__*"),splitLevel=cms.untracked.int32(99)),
+cms.untracked.PSet(branch = cms.untracked.string("patJets_slimmedJets__*"),splitLevel=cms.untracked.int32(99)),
+cms.untracked.PSet(branch = cms.untracked.string("recoVertexs_offlineSlimmedPrimaryVertices__*"),splitLevel=cms.untracked.int32(99)),
+cms.untracked.PSet(branch = cms.untracked.string("recoCaloClusters_reducedEgamma_reducedESClusters_*"),splitLevel=cms.untracked.int32(99)),
+cms.untracked.PSet(branch = cms.untracked.string("EcalRecHitsSorted_reducedEgamma_reducedEBRecHits_*"),splitLevel=cms.untracked.int32(99)),
+cms.untracked.PSet(branch = cms.untracked.string("EcalRecHitsSorted_reducedEgamma_reducedEERecHits_*"),splitLevel=cms.untracked.int32(99)),
+cms.untracked.PSet(branch = cms.untracked.string("recoGenJets_slimmedGenJets__*"),splitLevel=cms.untracked.int32(99)),
+cms.untracked.PSet(branch = cms.untracked.string("patJets_slimmedJetsPuppi__*"),splitLevel=cms.untracked.int32(99)),
+cms.untracked.PSet(branch = cms.untracked.string("EcalRecHitsSorted_reducedEgamma_reducedESRecHits_*"),splitLevel=cms.untracked.int32(99)),
+])

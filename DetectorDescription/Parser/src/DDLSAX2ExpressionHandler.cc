@@ -1,7 +1,8 @@
 #include "DetectorDescription/Parser/interface/DDLSAX2ExpressionHandler.h"
-#include "DetectorDescription/ExprAlgo/interface/ClhepEvaluator.h"
+#include "DetectorDescription/Core/interface/ClhepEvaluator.h"
 #include "DetectorDescription/Parser/interface/DDLElementRegistry.h"
 #include "Utilities/Xerces/interface/XercesStrUtils.h"
+
 #include <map>
 #include <string>
 
@@ -27,8 +28,8 @@ DDLSAX2ExpressionHandler::startElement( const XMLCh* const uri,
 {
   if( XMLString::equals( qname, uStr("Constant").ptr())) 
   {
-    std::string varName = toString(attrs.getValue(uStr("name").ptr()));
-    std::string varValue = toString(attrs.getValue(uStr("value").ptr()));
+    std::string varName = toString( attrs.getValue( uStr( "name" ).ptr()));
+    std::string varValue = toString( attrs.getValue( uStr( "value" ).ptr()));
     ClhepEvaluator & ev = DDLGlobalRegistry::instance().evaluator();
     ev.set(nmspace_, varName, varValue);
   }

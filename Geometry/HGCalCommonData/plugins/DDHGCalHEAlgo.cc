@@ -7,7 +7,7 @@
 #include <algorithm>
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "DetectorDescription/Base/interface/DDutils.h"
+#include "DetectorDescription/Core/interface/DDutils.h"
 #include "DetectorDescription/Core/interface/DDLogicalPart.h"
 #include "DetectorDescription/Core/interface/DDSolid.h"
 #include "DetectorDescription/Core/interface/DDMaterial.h"
@@ -84,7 +84,7 @@ void DDHGCalHEAlgo::execute(DDCompactView& cpv) {
   edm::LogInfo("HGCalGeom") << "<<== End of DDHGCalHEAlgo construction ...";
 }
 
-void DDHGCalHEAlgo::constructLayers(DDLogicalPart module, DDCompactView& cpv) {
+void DDHGCalHEAlgo::constructLayers(const DDLogicalPart& module, DDCompactView& cpv) {
   
   edm::LogInfo("HGCalGeom") << "DDHGCalHEAlgo test: \t\tInside Layers";
 

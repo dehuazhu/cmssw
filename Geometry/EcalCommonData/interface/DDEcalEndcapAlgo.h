@@ -4,9 +4,9 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "DetectorDescription/Base/interface/DDTypes.h"
+#include "DetectorDescription/Core/interface/DDTypes.h"
 #include "DetectorDescription/Core/interface/DDName.h"
-#include "DetectorDescription/Algorithm/interface/DDAlgorithm.h"
+#include "DetectorDescription/Core/interface/DDAlgorithm.h"
 #include "DetectorDescription/Core/interface/DDMaterial.h"
 #include "DetectorDescription/Core/interface/DDSplit.h"
 #include "DetectorDescription/Core/interface/DDTransform.h"
@@ -32,37 +32,37 @@ class DDEcalEndcapAlgo : public DDAlgorithm {
 
       //Constructor and Destructor
       DDEcalEndcapAlgo();
-      virtual ~DDEcalEndcapAlgo();
+      ~DDEcalEndcapAlgo() override;
 
       void initialize(const DDNumericArguments      & nArgs,
 		      const DDVectorArguments       & vArgs,
 		      const DDMapArguments          & mArgs,
 		      const DDStringArguments       & sArgs,
-		      const DDStringVectorArguments & vsArgs);
-      void execute(DDCompactView& cpv);
+		      const DDStringVectorArguments & vsArgs) override;
+      void execute(DDCompactView& cpv) override;
 
       //  New methods for SC geometry
       void EEPositionCRs( const DDName&        pName,
 			  const DDTranslation& offset,
-			  const int iSCType,
+			  int iSCType,
 			  DDCompactView& cpv );
 
-      void EECreateSC( const unsigned int iSCType, DDCompactView& cpv );
+      void EECreateSC( unsigned int iSCType, DDCompactView& cpv );
 
       void EECreateCR();
 
-      void EEPosSC( const int iCol , 
-		    const int iRow , 
+      void EEPosSC( int iCol , 
+		    int iRow , 
 		    DDName    EEDeeName );
 
-      unsigned int EEGetSCType( const unsigned int iCol , 
-				const unsigned int iRow  ) ;
+      unsigned int EEGetSCType( unsigned int iCol , 
+				unsigned int iRow  ) ;
 
-      DDName EEGetSCName( const int iCol , 
-			  const int iRow  ) ;
+      DDName EEGetSCName( int iCol , 
+			  int iRow  ) ;
 
-      std::vector<double> EEGetSCCtrs( const int iCol , 
-				       const int iRow  );
+      std::vector<double> EEGetSCCtrs( int iCol , 
+				       int iRow  );
 
       DDMaterial ddmat(  const std::string& s ) const ;
       DDName     ddname( const std::string& s ) const ;

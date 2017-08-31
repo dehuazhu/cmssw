@@ -21,14 +21,12 @@ class HcalTB06BeamSD : public CaloSD {
 
 public:    
 
-  HcalTB06BeamSD(G4String , const DDCompactView &, const SensitiveDetectorCatalog &,
+  HcalTB06BeamSD(const G4String&, const DDCompactView &, 
+                 const SensitiveDetectorCatalog &,
 		 edm::ParameterSet const &, const SimTrackManager*);
-  virtual ~HcalTB06BeamSD();
-  virtual double getEnergyDeposit(G4Step* );
-  virtual uint32_t setDetUnitId(G4Step* step);
-  static uint32_t  packIndex(int det, int lay, int x, int y);
-  static void      unpackIndex(const uint32_t & idx, int& det, int& lay,
-			       int& x, int& y);
+  ~HcalTB06BeamSD() override;
+  double getEnergyDeposit(G4Step* ) override;
+  uint32_t setDetUnitId(G4Step* step) override;
 
 private:    
 

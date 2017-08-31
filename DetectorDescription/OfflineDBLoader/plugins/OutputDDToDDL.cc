@@ -15,6 +15,7 @@
 #include "DetectorDescription/Core/interface/DDsvalues.h"
 #include "Geometry/Records/interface/IdealGeometryRecord.h"
 
+#include <cstddef>
 #include <fstream>
 #include <iomanip>
 #include <map>
@@ -22,7 +23,6 @@
 #include <ostream>
 #include <set>
 #include <string>
-#include <stddef.h>
 #include <utility>
 #include <vector>
 
@@ -37,7 +37,7 @@ class OutputDDToDDL : public edm::one::EDAnalyzer<edm::one::WatchRuns>
 {
 public:
   explicit OutputDDToDDL( const edm::ParameterSet& iConfig );
-  ~OutputDDToDDL();
+  ~OutputDDToDDL() override;
 
   void beginJob() override {}
   void beginRun( edm::Run const& iEvent, edm::EventSetup const& ) override;
@@ -150,7 +150,7 @@ OutputDDToDDL::beginRun( const edm::Run&, edm::EventSetup const& es )
     addToMatStore( ddLP.material(), matStore );
     addToSolStore( ddLP.solid(), solStore, rotStore );
     ++i;
-    if( git->size()) {
+    if( !git->empty()) {
       // ask for children of ddLP  
       DDCompactView::graph_type::edge_list::const_iterator cit  = git->begin();
       DDCompactView::graph_type::edge_list::const_iterator cend = git->end();
@@ -162,7 +162,7 @@ OutputDDToDDL::beginRun( const edm::Run&, edm::EventSetup const& es )
 	lpStore.insert( ddcurLP );
 	addToMatStore( ddcurLP.material(), matStore );
 	addToSolStore( ddcurLP.solid(), solStore, rotStore );
-	rotStore.insert( gra.edgeData( cit->second )->rot_ );
+	rotStore.insert( gra.edgeData( cit->second )->ddrot() );
 	out.position( ddLP, ddcurLP, gra.edgeData( cit->second ), m_rotNumSeed, *m_xos );
       } // iterate over children
     } // if (children)
@@ -245,6 +245,15 @@ OutputDDToDDL::addToSolStore( const DDSolid& sol, std::set<DDSolid> & solStore, 
       addToSolStore( bs.solidB(), solStore, rotStore );
     }
     rotStore.insert( bs.rotation());
+  }
+  if( sol.shape() == ddmultiunion ) {
+    const DDMultiUnionSolid& ms( sol );
+    for( auto it : ms.solids())
+      if( solStore.find(it) == solStore.end()) {
+	addToSolStore( it, solStore, rotStore );
+      }
+    for( auto it : ms.rotations())
+      rotStore.insert( it );
   }
 }
 

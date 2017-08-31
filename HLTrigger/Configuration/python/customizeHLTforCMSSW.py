@@ -17,44 +17,39 @@ from HLTrigger.Configuration.common import *
 #                     pset.minGoodStripCharge = cms.PSet(refToPSet_ = cms.string('HLTSiStripClusterChargeCutNone'))
 #     return process
 
-# Matching ECAL selective readout in particle flow, need a new input with online Selective Readout Flags
-def customiseFor17794(process):
-     for edproducer in producers_by_type(process, "PFRecHitProducer"):
-          if hasattr(edproducer,'producers'):
-               for pset in edproducer.producers:
-                    if (pset.name == 'PFEBRecHitCreator' or pset.name == 'PFEERecHitCreator'):
-                         if not hasattr(pset,'srFlags'):
-                              pset.srFlags = cms.InputTag('hltEcalDigis')
-     return process
-
-
-# Dynamic track algo priority order
-def customiseFor17771(process):
-    if not hasattr(process, "hltTrackAlgoPriorityOrder"):
-        from RecoTracker.FinalTrackSelectors.trackAlgoPriorityOrder_cfi import trackAlgoPriorityOrder
-        process.hltTrackAlgoPriorityOrder = trackAlgoPriorityOrder.clone(
-            ComponentName = "hltTrackAlgoPriorityOrder",
-            algoOrder = [] # HLT iteration order is correct in the hard-coded default
-        )
-
-    for producer in producers_by_type(process, "SimpleTrackListMerger", "TrackCollectionMerger", "TrackListMerger"):
-        if not hasattr(producer, "trackAlgoPriorityOrder"):
-            producer.trackAlgoPriorityOrder = cms.string("hltTrackAlgoPriorityOrder")
+# Add new parameters to RecoTrackRefSelector
+def customiseFor19029(process):
+    for producer in producers_by_type(process, "RecoTrackRefSelector"):
+        if not hasattr(producer, "minPhi"):
+            producer.minPhi = cms.double(-3.2)
+            producer.maxPhi = cms.double(3.2)
     return process
 
-# Add optional SeedStopReason to CkfTrackCandidateMaker
-def customiseFor17792(process):
-    for producer in producers_by_type(process, "CkfTrackCandidateMaker"):
-        if not hasattr(producer, "produceSeedStopReasons"):
-            producer.produceSeedStopReasons = cms.bool(False)
+def customiseFor19824(process) :
+    for producer in esproducers_by_type(process, "ClusterShapeHitFilterESProducer"):
+         producer.PixelShapeFile   = cms.string('RecoPixelVertexing/PixelLowPtUtilities/data/pixelShapePhase1_all.par')
+         producer.PixelShapeFileL1 = cms.string('RecoPixelVertexing/PixelLowPtUtilities/data/pixelShapePhase1_all.par')
+    return process
+
+# Migrate uGT non-CondDB parameters to new cff: remove StableParameters dependence in favour of GlobalParameters
+def customiseFor19989(process):
+    if hasattr(process,'StableParametersRcdSource'):
+        delattr(process,'StableParametersRcdSource')
+    if hasattr(process,'StableParameters'):
+        delattr(process,'StableParameters')
+    if not hasattr(process,'GlobalParameters'):
+        from L1Trigger.L1TGlobal.GlobalParameters_cff import GlobalParameters
+        process.GlobalParameters = GlobalParameters
     return process
 
 # CMSSW version specific customizations
 def customizeHLTforCMSSW(process, menuType="GRun"):
+
     # add call to action function in proper order: newest last!
     # process = customiseFor12718(process)
-    process = customiseFor17771(process)
-    process = customiseFor17792(process)
-    process = customiseFor17794(process)
+
+    process = customiseFor19029(process)
+    process = customiseFor19824(process)
+    process = customiseFor19989(process)
 
     return process

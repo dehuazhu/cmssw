@@ -44,6 +44,8 @@ class MCSmartSingleParticleFilter : public edm::EDFilter {
 
       virtual bool filter(edm::Event&, const edm::EventSetup&);
    private:
+      // ----------memeber function----------------------
+
       // ----------member data ---------------------------
       
        edm::EDGetTokenT<edm::HepMCProduct> token_;
@@ -57,5 +59,6 @@ class MCSmartSingleParticleFilter : public edm::EDFilter {
        std::vector<double> decayRadiusMax;
        std::vector<double> decayZMin;  
        std::vector<double> decayZMax;
+       double betaBoost;
 };
 #endif

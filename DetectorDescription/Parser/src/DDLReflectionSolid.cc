@@ -1,12 +1,11 @@
 #include "DetectorDescription/Parser/src/DDLReflectionSolid.h"
-
-#include <iostream>
-
 #include "DetectorDescription/Core/interface/DDName.h"
 #include "DetectorDescription/Core/interface/DDSolid.h"
 #include "DetectorDescription/Parser/interface/DDLElementRegistry.h"
 #include "DetectorDescription/Parser/src/DDLSolid.h"
 #include "DetectorDescription/Parser/src/DDXMLElement.h"
+
+#include <iostream>
 
 class DDCompactView;
 
@@ -26,7 +25,7 @@ void
 DDLReflectionSolid::processElement( const std::string& name, const std::string& nmspace, DDCompactView& cpv )
 {
   // get solid reference:
-  DDXMLElement* myrSolid = myRegistry_->getElement("rSolid");
+  auto myrSolid = myRegistry_->getElement("rSolid");
 
   if (myrSolid->size() != 1)
   {

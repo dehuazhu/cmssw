@@ -50,11 +50,25 @@ def applySubstructure( process, postfix="" ) :
 
 
 
-    #add AK8 from PUPPI
-    from RecoJets.JetProducers.ak8PFJetsPuppi_cfi import ak4PFJetsPuppi, ak8PFJetsPuppi
+    #add AK8 from PUPPI                                                                                                                                 
+    from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJetsPuppi
+    from RecoJets.JetProducers.ak8PFJets_cfi import ak8PFJetsPuppi
     addToProcessAndTask('ak4PFJetsPuppi'+postfix,ak4PFJetsPuppi.clone(), process, task)
     addToProcessAndTask('ak8PFJetsPuppi'+postfix,ak8PFJetsPuppi.clone(), process, task)
-    from RecoJets.Configuration.RecoPFJets_cff import ak8PFJetsPuppiSoftDrop 
+    from RecoJets.Configuration.RecoPFJets_cff import ak8PFJetsPuppiSoftDrop
+    addToProcessAndTask('ak8PFJetsPuppiSoftDrop'+postfix, ak8PFJetsPuppiSoftDrop.clone(), process, task)
+    getattr(process,"ak8PFJetsPuppi").doAreaFastjet = True # even for standard ak8PFJets this is overwritten in RecoJets/Configuration/python/RecoPFJets_cff
+
+
+    #add AK8 from PUPPI
+    from RecoJets.JetProducers.ak4PFJets_cfi import ak4PFJetsPuppi
+    from RecoJets.JetProducers.ak8PFJets_cfi import ak8PFJetsPuppi, ak8PFJetsPuppiSoftDrop, ak8PFJetsPuppiConstituents, ak8PFJetsCHSConstituents
+    
+    #from RecoJets.Configuration.RecoPFJets_cff import ak8PFJetsPuppi, ak8PFJetsPuppiSoftDrop, ak8PFJetsPuppiConstituents, ak8PFJetsCHSConstituents
+    addToProcessAndTask('ak4PFJetsPuppi'+postfix,ak4PFJetsPuppi.clone(), process, task)
+    addToProcessAndTask('ak8PFJetsPuppiConstituents', ak8PFJetsPuppiConstituents.clone(), process, task )
+    addToProcessAndTask('ak8PFJetsCHSConstituents', ak8PFJetsCHSConstituents.clone(), process, task )
+    addToProcessAndTask('ak8PFJetsPuppi'+postfix,ak8PFJetsPuppi.clone(), process, task)
     addToProcessAndTask('ak8PFJetsPuppiSoftDrop'+postfix, ak8PFJetsPuppiSoftDrop.clone(), process, task)
     getattr(process,"ak8PFJetsPuppi").doAreaFastjet = True # even for standard ak8PFJets this is overwritten in RecoJets/Configuration/python/RecoPFJets_cff
 
@@ -63,7 +77,7 @@ def applySubstructure( process, postfix="" ) :
                      jetSource = cms.InputTag('ak8PFJetsPuppi'+postfix),
                      algo= 'AK', rParam = 0.8,
                      jetCorrections = ('AK8PFPuppi', cms.vstring(['L2Relative', 'L3Absolute']), 'None'),
-                     btagDiscriminators = ([x.getModuleLabel() for x in patJetsDefault.discriminatorSources] + ['pfBoostedDoubleSecondaryVertexAK8BJetTags']),
+                     btagDiscriminators = ([x.value() for x in patJetsDefault.discriminatorSources] + ['pfBoostedDoubleSecondaryVertexAK8BJetTags']),
                      genJetCollection = cms.InputTag('slimmedGenJetsAK8')
                      )
     getattr(process,"patJetsAK8Puppi"+postfix).userData.userFloats.src = [] # start with empty list of user floats
@@ -174,7 +188,7 @@ def applySubstructure( process, postfix="" ) :
         jetSource = cms.InputTag('ak8PFJetsPuppiSoftDrop'+postfix,'SubJets'),
         algo = 'ak',  # needed for subjet flavor clustering
         rParam = 0.8, # needed for subjet flavor clustering
-        btagDiscriminators = ['pfCombinedSecondaryVertexV2BJetTags', 'pfCombinedInclusiveSecondaryVertexV2BJetTags','pfCombinedMVAV2BJetTags'],
+        btagDiscriminators = ['pfDeepCSVJetTags:probb', 'pfDeepCSVJetTags:probbb', 'pfCombinedInclusiveSecondaryVertexV2BJetTags','pfCombinedMVAV2BJetTags'],
         jetCorrections = ('AK4PFPuppi', ['L2Relative', 'L3Absolute'], 'None'),
         explicitJTA = True,  # needed for subjet b tagging
         svClustering = True, # needed for subjet b tagging

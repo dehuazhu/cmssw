@@ -1,15 +1,15 @@
 #ifndef DDExpandedView_h
 #define DDExpandedView_h
 
-#include <stddef.h>
+#include <cstddef>
 #include <iosfwd>
 #include <map>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include "DetectorDescription/Base/interface/DDRotationMatrix.h"
-#include "DetectorDescription/Base/interface/DDTranslation.h"
+#include "DetectorDescription/Core/interface/DDRotationMatrix.h"
+#include "DetectorDescription/Core/interface/DDTranslation.h"
 #include "DetectorDescription/Core/interface/DDCompactView.h"
 #include "DetectorDescription/Core/interface/DDExpandedNode.h"
 #include "DetectorDescription/Core/interface/DDLogicalPart.h"

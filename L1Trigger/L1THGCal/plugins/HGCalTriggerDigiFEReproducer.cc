@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDProducer.h"
+#include "FWCore/Framework/interface/stream/EDProducer.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -9,6 +9,8 @@
 #include "DataFormats/L1THGCal/interface/HGCFETriggerDigiFwd.h"
 #include "DataFormats/HGCDigi/interface/HGCDigiCollections.h"
 
+#include "Geometry/Records/interface/CaloGeometryRecord.h"
+
 #include "L1Trigger/L1THGCal/interface/HGCalTriggerGeometryBase.h"
 #include "L1Trigger/L1THGCal/interface/HGCalTriggerFECodecBase.h"
 #include "L1Trigger/L1THGCal/interface/HGCalTriggerBackendProcessor.h"
@@ -16,7 +18,7 @@
 #include <sstream>
 #include <memory>
 
-class HGCalTriggerDigiFEReproducer : public edm::EDProducer 
+class HGCalTriggerDigiFEReproducer : public edm::stream::EDProducer<>
 {  
     public:    
         HGCalTriggerDigiFEReproducer(const edm::ParameterSet&);
@@ -59,7 +61,7 @@ HGCalTriggerDigiFEReproducer::HGCalTriggerDigiFEReproducer(const edm::ParameterS
 void HGCalTriggerDigiFEReproducer::beginRun(const edm::Run& /*run*/, const edm::EventSetup& es) 
 /*****************************************************************/
 {
-    es.get<IdealGeometryRecord>().get(triggerGeometry_);
+    es.get<CaloGeometryRecord>().get(triggerGeometry_);
     codec_->setGeometry(triggerGeometry_.product());
     backEndProcessor_->setGeometry(triggerGeometry_.product());
 }
